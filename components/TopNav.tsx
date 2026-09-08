@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { GitHubIcon, GoogleIcon } from '@/components/icons';
+import { UserAvatar } from '@/components/UserAvatar';
 
 const navItems = [
   { href: '/',          label: 'Dashboard' },
@@ -47,15 +48,15 @@ export function TopNav() {
               ))}
 
               <div className="topnav-account-action flex items-center gap-3">
-               {session?.user?.image && (
-  <Link href="/profile">
-                    <img
-      className="topnav-avatar"
-      src={session.user.image}
-      alt={session.user.name ?? 'User avatar'}
-    />
-  </Link>
-)}
+                <Link href="/profile" aria-label="Your profile">
+                  <UserAvatar
+                    className="topnav-avatar"
+                    size={28}
+                    name={session.user?.name}
+                    email={session.user?.email}
+                    image={session.user?.image}
+                  />
+                </Link>
                 <button
                   type="button"
                   onClick={() => signOut({ callbackUrl: '/login' })}

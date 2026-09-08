@@ -5,6 +5,8 @@ import { auth } from '@/lib/auth';
 import { wcagCriteria } from '@/lib/wcag-criteria';
 import { SignOutButton } from '@/components/SignOutButton';
 import { DeleteAccountButton } from '@/components/DeleteAccountButton';
+import { UserAvatar } from '@/components/UserAvatar';
+import { AuditStatusBadge } from '@/components/AuditStatusBadge';
 
 export const revalidate = 0;
 
@@ -13,8 +15,11 @@ async function getProfileData(userId: string) {
     where: { id: userId },
     include: {
       accounts: { select: { provider: true } },
+      // Needed to decide whether to show the "Email" sign-in badge.
+      // passwordHash itself is only used as a boolean here and is never rendered.
       audits: {
         orderBy: { createdAt: 'desc' },
+        take: 5,
         include: {
           pages: {
             include: { results: true },
@@ -33,8 +38,8 @@ export default async function ProfilePage() {
   const user = await getProfileData(session.user.id);
   if (!user) redirect('/login');
 
-  // Recent audits — last 5
-  const recentAudits = user.audits.slice(0, 5).map((audit) => {
+  // Recent audits — last 5 (already limited and ordered by the query)
+  const recentAudits = user.audits.map((audit) => {
     const results = audit.pages.flatMap((p) => p.results);
     const passed  = results.filter((r) => r.status === 'pass').length;
     const failed  = results.filter((r) => r.status === 'fail').length;
@@ -72,19 +77,21 @@ export default async function ProfilePage() {
 
         {/* User info */}
        <div className="flex items-center gap-5 mb-6">
-  {user.image && (
-    <img
-      src={user.image}
-      alt={user.name ?? 'User avatar'}
-      style={{
-        width: '80px',
-        height: '80px',
-        borderRadius: '50%',
-        border: '3px solid var(--color-border)',
-        flexShrink: 0,
-      }}
+  <span
+    style={{
+      display: 'inline-flex',
+      borderRadius: '50%',
+      border: '3px solid var(--color-border)',
+      flexShrink: 0,
+    }}
+  >
+    <UserAvatar
+      name={user.name}
+      email={user.email}
+      image={user.image}
+      size={80}
     />
-  )}
+  </span>
   <div style={{ paddingLeft: '8px' }}>
     <h1 style={{
       fontFamily: 'var(--font-display)',
@@ -102,6 +109,9 @@ export default async function ProfilePage() {
           {provider.charAt(0).toUpperCase() + provider.slice(1)}
         </span>
       ))}
+      {user.passwordHash && (
+        <span className="badge badge-primary">Email</span>
+      )}
     </div>
   </div>
 </div>
@@ -124,31 +134,24 @@ export default async function ProfilePage() {
               </Link>
             </div>
           ) : (
-            <div>
+            <div className="audit-list">
               {recentAudits.map((audit) => (
-                <div key={audit.id} style={{
-                  padding: '16px 24px',
-                  borderBottom: '1px solid var(--color-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
-                }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 500, fontSize: '15px', marginBottom: '2px' }}>
-                      {audit.name}
+                <div key={audit.id} className="audit-row">
+
+                  {/* Top row — name + status */}
+                  <div className="flex justify-between items-center gap-4 mb-3">
+                    <div className="min-w-0">
+                      <div className="audit-row-name">{audit.name}</div>
+                      <div className="audit-row-url">{audit.url}</div>
                     </div>
-                    <div className="text-muted" style={{
-                      fontSize: '13px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {audit.url}
+                    <div className="flex-shrink-0">
+                      <AuditStatusBadge status={audit.stats.status} />
                     </div>
                   </div>
 
-                  <div style={{ width: '100px', flexShrink: 0 }}>
-                    <div className="progress-bar">
+                  {/* Progress */}
+                  <div className="flex items-center gap-2">
+                    <div className="progress-bar progress-track">
                       <div
                         className={`progress-bar-fill ${
                           audit.stats.progress === 100
@@ -158,17 +161,18 @@ export default async function ProfilePage() {
                         style={{ width: `${audit.stats.progress}%` }}
                       />
                     </div>
-                    <div style={{ fontSize: '12px', color: '#555', marginTop: '3px', textAlign: 'right' }}>
+                    <span className="progress-value">
                       {audit.stats.progress}%
-                    </div>
+                    </span>
                   </div>
 
-                  <div className="flex gap-2">
+                  {/* Actions */}
+                  <div className="audit-row-actions flex gap-2 items-center mt-4">
                     <Link href={`/audit/${audit.id}`} className="btn btn-outline btn-sm">
-                      Open
+                      Open Audit
                     </Link>
                     <Link href={`/audit/${audit.id}/report`} className="btn btn-ghost btn-sm">
-                      Report
+                      View Report
                     </Link>
                   </div>
                 </div>
@@ -205,6 +209,23 @@ export default async function ProfilePage() {
                       ✓ {provider.charAt(0).toUpperCase() + provider.slice(1)} connected
                     </div>
                   ))}
+                  {user.passwordHash && (
+                    <div style={{
+                      padding: '8px 16px',
+                      background: 'var(--color-primary-light)',
+                      borderRadius: 'var(--radius)',
+                      fontSize: '14px',
+                      color: 'var(--color-primary)',
+                      fontWeight: 500,
+                    }}>
+                      ✓ Email &amp; password enabled
+                    </div>
+                  )}
+                  {connectedProviders.length === 0 && !user.passwordHash && (
+                    <div className="text-muted" style={{ fontSize: '14px' }}>
+                      Demo account
+                    </div>
+                  )}
                 </div>
               </div>
 

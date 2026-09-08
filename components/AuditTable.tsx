@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { AuditStatusBadge } from '@/components/AuditStatusBadge';
 
 type AuditWithStats = {
   id: string;
@@ -18,21 +19,6 @@ type AuditWithStats = {
     progress: number;
     status: string;
   };
-};
-
-const statusBadge = (status: string) => {
-  switch (status) {
-    case 'complete':
-      return <span className="badge badge-success">Complete</span>;
-    case 'complete-with-issues':
-      return <span className="badge badge-danger">Issues Found</span>;
-    case 'in-progress':
-      return <span className="badge badge-warning">In Progress</span>;
-    case 'not-started':
-      return <span className="badge badge-neutral">Not Started</span>;
-    default:
-      return <span className="badge badge-neutral">Empty</span>;
-  }
 };
 
 function DeleteButton({
@@ -134,7 +120,7 @@ export function AuditTable({ audits }: { audits: AuditWithStats[] }) {
               <div className="audit-row-url">{audit.url}</div>
             </div>
             <div className="flex-shrink-0">
-              {statusBadge(audit.stats.status)}
+              <AuditStatusBadge status={audit.stats.status} />
             </div>
           </div>
 

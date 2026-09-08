@@ -9,9 +9,10 @@ export default auth((req) => {
   const isLoginPage = req.nextUrl.pathname === '/login';
   const isSharePage = req.nextUrl.pathname.startsWith('/share/');
   const isAuthRoute = req.nextUrl.pathname.startsWith('/api/auth');
+  const isRegisterRoute = req.nextUrl.pathname === '/api/register';
 
   // Allow public routes
-  if (isLoginPage || isSharePage || isAuthRoute) {
+  if (isLoginPage || isSharePage || isAuthRoute || isRegisterRoute) {
     return NextResponse.next();
   }
 
