@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { GitHubIcon, GoogleIcon } from '@/components/icons';
+import { GitHubIcon, GoogleIcon, MenuIcon, XIcon } from '@/components/icons';
 import { UserAvatar } from '@/components/UserAvatar';
 
 const navItems = [
@@ -14,6 +15,13 @@ const navItems = [
 export function TopNav() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close the mobile menu on route change
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMenuOpen(false);
+  }, [pathname]);
 
   // Don't render nav for unauthenticated users
   // (middleware handles redirect, this prevents flash)
@@ -29,7 +37,20 @@ export function TopNav() {
           </Link>
         </div>
 
-        <nav className="topnav-links" aria-label="Main navigation">
+        {status === 'authenticated' && (
+          <button
+            type="button"
+            className="topnav-menu-toggle"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="topnav-links"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          >
+            {menuOpen ? <XIcon size={18} /> : <MenuIcon size={18} />}
+          </button>
+        )}
+
+        <nav id="topnav-links" className={`topnav-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
           {status === 'loading' && (
             <div className="topnav-loading" aria-hidden="true" />
           )}

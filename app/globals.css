@@ -1907,11 +1907,24 @@ a:focus-visible {
 .criterion-nav {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   gap: 16px;
   padding-top: 24px;
   border-top: 1px solid var(--color-border);
   margin-top: 8px;
+}
+
+/* Long criterion titles must wrap and shrink instead of overflowing the page. */
+.criterion-nav .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: calc(50% - 8px);
+  white-space: normal;
+  text-align: left;
+}
+
+.criterion-nav .btn span {
+  min-width: 0;
 }
 
 .criterion-nav-top {
@@ -2652,5 +2665,98 @@ input[type="radio"] {
 
   .checklist-nav {
     max-height: none;
+  }
+}
+
+/* ── TopNav mobile menu ──
+   Collapses nav links + account actions into a toggled dropdown so the
+   header never overflows or clips content on narrow viewports. These rules
+   are intentionally last so they win over the older breakpoint rules above. */
+.topnav-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  margin-left: auto;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: #ffffff;
+}
+
+.topnav-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.topnav-menu-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 640px) {
+  .topnav {
+    position: relative;
+  }
+
+  .topnav-inner {
+    flex-wrap: nowrap;
+  }
+
+  .topnav-menu-toggle {
+    display: inline-flex;
+  }
+
+  .topnav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    margin-left: 0;
+    padding: 12px 16px 16px;
+    background: var(--color-sidebar);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-md);
+  }
+
+  .topnav-links.open {
+    display: flex;
+  }
+
+  .topnav-link {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .topnav-account-action {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: space-between;
+  }
+
+  .topnav-signin {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+}
+
+/* Report export/share buttons must wrap instead of overflowing narrow screens. */
+@media (max-width: 480px) {
+  .report-export-actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .report-export-actions > .btn {
+    flex: 1 1 100%;
   }
 }

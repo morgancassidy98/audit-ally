@@ -263,7 +263,7 @@ const handleExport = async () => {
   };
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 report-export-actions">
       <button
         className="btn btn-outline"
         onClick={handleCopyLink}
