@@ -178,7 +178,7 @@ export default function NewAuditPage() {
               <ol className="info-list">
                 <li>Add the individual pages you want to audit</li>
                 <li>Run an automated scan to pre-populate Lighthouse results</li>
-                <li>Work through the guided WCAG 2.1 checklist for each page</li>
+                <li>Work through the guided WCAG 2.2 checklist for each page</li>
                 <li>Export a detailed accessibility report when complete</li>
               </ol>
             </div>

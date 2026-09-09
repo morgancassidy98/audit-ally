@@ -139,7 +139,7 @@ export default async function AuditPage({
               <h3>No pages yet</h3>
               <p>
                 Add the pages you want to audit using the tools below. Each page
-                gets its own guided WCAG 2.1 checklist.
+                gets its own guided WCAG 2.2 checklist.
               </p>
             </div>
           ) : (

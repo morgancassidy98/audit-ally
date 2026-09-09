@@ -84,10 +84,6 @@ export default async function DashboardPage() {
             <div className="stat-card-value">{completeAudits}</div>
             <div className="stat-card-label">Completed</div>
           </div>
-          <div className="stat-card">
-            <div className="stat-card-value">{wcagCriteria.length}</div>
-            <div className="stat-card-label">WCAG Criteria</div>
-          </div>
         </div>
 
         {/* Audit list */}
