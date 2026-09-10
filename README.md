@@ -5,10 +5,11 @@ Audit Ally is an authenticated Next.js app for tracking and reporting WCAG acces
 ## Features
 
 - Create and manage accessibility audits for a website or digital product
+- Duplicate an existing audit to start a fresh pass with the same pages
 - Discover pages from a sitemap, sitemap index, robots.txt, or homepage links
 - Review discovered pages and add them individually or in bulk
 - Add pages manually and track their status over time
-- Review a WCAG checklist grouped by criterion and level
+- Review a WCAG 2.2 Level A/AA checklist grouped by criterion and level
 - Mark criteria as pass, fail, N/A, or untested with severity and notes
 - Use keyboard shortcuts while working through the checklist
 - Run automated Lighthouse accessibility scans for individual pages
@@ -16,7 +17,9 @@ Audit Ally is an authenticated Next.js app for tracking and reporting WCAG acces
 - Check foreground/background color contrast against WCAG thresholds
 - Generate a report summary and download a PDF report
 - Copy a public report link protected by a random share token
-- Sign in with GitHub or Google
+- Sign in with GitHub, Google, or email/password
+- Explore a pre-filled demo audit without creating an account
+- Manage your profile and delete your account and all associated data
 
 ## Tech Stack
 
@@ -101,7 +104,7 @@ npm run db:reset   # Reset the database and rerun migrations
 
 ## Typical Workflow
 
-1. Sign in with GitHub or Google.
+1. Sign in with GitHub, Google, or email/password — or select "Explore the Demo" to try a pre-filled sample audit without an account.
 2. Create a new audit with its name and base website URL.
 3. Use automatic page discovery. Audit Ally checks sitemap sources first and falls back to same-origin homepage links when no sitemap is available.
 4. Review the discovered candidates and select individual pages or all candidates to add. You can also add a page manually.
