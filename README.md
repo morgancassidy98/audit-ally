@@ -2,6 +2,16 @@
 
 Audit Ally is an authenticated Next.js app for tracking and reporting WCAG accessibility audits across multiple websites and pages. It combines guided manual testing with Lighthouse accessibility checks, page discovery, contrast checking, and exportable reports.
 
+## Screenshots
+
+| Dashboard | Audit Detail |
+| --- | --- |
+| ![Dashboard listing audits with progress stats](docs/screenshots/dashboard.png) | ![Audit detail page showing pages and progress](docs/screenshots/audit-detail.png) |
+
+| Guided Checklist | Report |
+| --- | --- |
+| ![Guided WCAG checklist for a single page](docs/screenshots/checklist.png) | ![Accessibility report with pass/fail summary](docs/screenshots/report.png) |
+
 ## Features
 
 - Create and manage accessibility audits for a website or digital product
