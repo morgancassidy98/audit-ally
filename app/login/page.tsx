@@ -29,7 +29,8 @@ export default function LoginPage() {
               </button>
             </form>
             <p className={`text-muted ${styles.hint}`}>
-              Reviewing this app? Jump straight into a pre-filled sample audit — no account needed.
+              Reviewing this app? Try it out with a private, temporary demo account — no sign-up
+              needed. Your demo audits are only visible to you and are cleared automatically.
             </p>
           </div>
 

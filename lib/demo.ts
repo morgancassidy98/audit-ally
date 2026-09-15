@@ -1,86 +1,57 @@
-import { prisma } from '@/lib/prisma';
-import { wcagCriteria } from '@/lib/wcag-criteria';
+import { randomUUID } from 'node:crypto';
+import { prisma } from './prisma';
 
-export const DEMO_USER_EMAIL = 'demo@auditally.app';
 export const DEMO_USER_NAME = 'Demo Reviewer';
+export const DEMO_USER_EMAIL_DOMAIN = 'demo.local';
 
-const DEMO_PAGES = [
-  { title: 'Home', path: '/' },
-  { title: 'About', path: '/about' },
-  { title: 'Contact', path: '/contact' },
-] as const;
+// Abandoned demo accounts (browser closed without signing out) get swept up
+// after this long so demo data never lingers indefinitely.
+export const DEMO_MAX_AGE_MS = 1000 * 60 * 60 * 6;
 
-// A spread of realistic results so the demo audit shows mixed progress,
-// severities, and notes in the checklist and report views.
-const DEMO_RESULT_PLAN: Array<{
-  status: 'pass' | 'fail' | 'na';
-  severity?: 'critical' | 'serious' | 'moderate' | 'minor';
-  notes?: string;
-}> = [
-  {
-    status: 'fail',
-    severity: 'critical',
-    notes: 'Hero image and several icons are missing alt text.',
-  },
-  { status: 'pass' },
-  { status: 'pass' },
-  {
-    status: 'fail',
-    severity: 'serious',
-    notes: 'Body text on the footer is 4.1:1 against the background.',
-  },
-  { status: 'na', notes: 'No audio or video content on this page.' },
-  { status: 'pass' },
-  {
-    status: 'fail',
-    severity: 'moderate',
-    notes: 'Mobile menu cannot be opened with the keyboard.',
-  },
-  { status: 'pass' },
-];
+export function createDemoUserId() {
+  return `demo-${randomUUID()}`;
+}
 
-/**
- * Finds or creates the shared demo user with a pre-seeded sample audit so
- * reviewers can explore the app without signing up. Idempotent.
- */
-export async function ensureDemoUser() {
-  const existing = await prisma.user.findUnique({
-    where: { email: DEMO_USER_EMAIL },
+export function getDemoSessionUser() {
+  const id = createDemoUserId();
+
+  return {
+    id,
+    email: `${id}@${DEMO_USER_EMAIL_DOMAIN}`,
+    name: DEMO_USER_NAME,
+    image: null,
+  };
+}
+
+export function isDemoUser(user?: { id?: string | null; email?: string | null } | null) {
+  if (!user) return false;
+  if (typeof user.id === 'string' && user.id.startsWith('demo-')) return true;
+  if (typeof user.email === 'string' && user.email.endsWith(`@${DEMO_USER_EMAIL_DOMAIN}`)) return true;
+  return false;
+}
+
+// Creates a real (but throwaway) User row for this demo session so audits it
+// creates can be persisted like any other user's — scoped to its own random
+// id and invisible to everyone else — then cleaned up when the session ends.
+export async function createDemoUser() {
+  const demo = getDemoSessionUser();
+  await prisma.user.create({
+    data: { id: demo.id, email: demo.email, name: demo.name },
   });
-  if (existing) return existing;
+  return demo;
+}
 
-  const auditUrl = 'https://example.com';
-  const criteriaToSeed = wcagCriteria.slice(0, DEMO_RESULT_PLAN.length);
+export async function deleteDemoUser(userId: string) {
+  if (!isDemoUser({ id: userId })) return;
+  // Cascades to the demo user's audits/pages/results — nothing is retained.
+  await prisma.user.delete({ where: { id: userId } }).catch(() => {});
+}
 
-  return prisma.user.create({
-    data: {
-      email: DEMO_USER_EMAIL,
-      name: DEMO_USER_NAME,
-      audits: {
-        create: {
-          name: 'Example Website',
-          url: auditUrl,
-          shareToken: crypto.randomUUID(),
-          pages: {
-            create: DEMO_PAGES.map((page, pageIndex) => ({
-              title: page.title,
-              url: new URL(page.path, auditUrl).toString(),
-              sortOrder: pageIndex,
-              results: {
-                create: criteriaToSeed.map((criterion, i) => {
-                  const plan = DEMO_RESULT_PLAN[i];
-                  return {
-                    criterionId: criterion.id,
-                    status: plan.status,
-                    severity: plan.severity ?? null,
-                    notes: plan.notes ?? '',
-                  };
-                }),
-              },
-            })),
-          },
-        },
-      },
+export async function cleanupStaleDemoUsers() {
+  await prisma.user.deleteMany({
+    where: {
+      id: { startsWith: 'demo-' },
+      createdAt: { lt: new Date(Date.now() - DEMO_MAX_AGE_MS) },
     },
-  });
+  }).catch(() => {});
 }

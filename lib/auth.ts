@@ -5,7 +5,7 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
-import { ensureDemoUser } from '@/lib/demo';
+import { DEMO_MAX_AGE_MS, cleanupStaleDemoUsers, createDemoUser, deleteDemoUser, isDemoUser } from '@/lib/demo';
 import authConfig from '@/lib/auth.config';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -56,24 +56,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: 'Demo',
       credentials: {},
       async authorize() {
-        const user = await ensureDemoUser();
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-        };
+        const user = await createDemoUser();
+        // Best-effort sweep of abandoned demo accounts; never blocks sign-in.
+        void cleanupStaleDemoUsers();
+        return user;
       },
     }),
   ],
   callbacks: {
     jwt({ token, user }) {
-      if (user) token.sub = user.id;
+      if (user) {
+        token.sub = user.id;
+        // Demo sessions self-expire so a stale token can never outlive the
+        // ephemeral demo user row it points at (which gets swept up server-side).
+        if (isDemoUser(user)) token.demoExpiresAt = Date.now() + DEMO_MAX_AGE_MS;
+      } else if (typeof token.demoExpiresAt === 'number' && Date.now() > token.demoExpiresAt) {
+        delete token.sub;
+        delete token.demoExpiresAt;
+      }
       return token;
     },
     session({ session, token }) {
       if (session.user && token.sub) session.user.id = token.sub;
       return session;
+    },
+  },
+  events: {
+    async signOut(message) {
+      const sub = 'token' in message ? message.token?.sub : undefined;
+      if (sub && isDemoUser({ id: sub })) {
+        await deleteDemoUser(sub);
+      }
     },
   },
 });

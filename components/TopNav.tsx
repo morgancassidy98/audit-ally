@@ -1,11 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { GitHubIcon, GoogleIcon, MenuIcon, XIcon } from '@/components/icons';
 import { UserAvatar } from '@/components/UserAvatar';
+import auditAllyLightLogo from '../docs/logos/auditally_logo_light.png';
 
 const navItems = [
   { href: '/',          label: 'Dashboard' },
@@ -31,9 +33,19 @@ export function TopNav() {
     <header className="topnav" role="banner">
       <div className="topnav-inner">
         <div className="topnav-brand">
-          <Link href="/" className="topnav-brand-link">
-            <span className="topnav-brand-name">Audit Ally</span>
-            <span className="topnav-brand-tagline">WCAG Accessibility Audit Tracker and Reporting Tool</span>
+          <Link href="/" className="topnav-brand-link" aria-label="Audit Ally home">
+            <Image
+              src={auditAllyLightLogo}
+              alt="Audit Ally logo"
+              className="topnav-brand-mark"
+              width={58}
+              height={58}
+              priority
+            />
+            <span className="topnav-brand-copy">
+              <span className="topnav-brand-name">Audit Ally</span>
+              <span className="topnav-brand-tagline">WCAG Accessibility Audit Tracker and Reporting Tool</span>
+            </span>
           </Link>
         </div>
 

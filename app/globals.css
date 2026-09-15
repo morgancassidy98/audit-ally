@@ -133,16 +133,37 @@ select.form-input {
 
 .topnav-brand {
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .topnav-brand-link {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   text-decoration: none;
+  min-width: 0;
 }
 
 .topnav-brand-link:hover { text-decoration: none; }
+
+.topnav-brand-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  line-height: 1.08;
+}
+
+.topnav-brand-mark {
+  width: 62px;
+  height: 62px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px;
+}
 
 .topnav-brand-name {
   font-family: var(--font-display);
@@ -153,10 +174,11 @@ select.form-input {
 }
 
 .topnav-brand-tagline {
-  font-size: 13px;
+  font-size: 11px;
   color: rgba(255,255,255,0.78);
   letter-spacing: var(--letter-spacing-wider);
   text-transform: uppercase;
+  line-height: 1.25;
 }
 
 .topnav-links {
@@ -203,6 +225,12 @@ select.form-input {
     padding-bottom: 0;
     flex-wrap: nowrap; /* prevent wrapping */
     gap: 8px;
+  }
+
+  .topnav-brand-mark {
+    width: 42px;
+    height: 42px;
+    padding: 3px;
   }
 
   .topnav-brand-tagline { display: none; }
