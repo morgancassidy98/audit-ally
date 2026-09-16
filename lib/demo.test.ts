@@ -12,6 +12,6 @@ describe('demo session helpers', () => {
   });
 
   it('treats shared demo records as demo users for runtime protections', () => {
-    expect(isDemoUser({ id: 'demo-user', email: 'demo@auditally.app', name: 'Demo Reviewer' })).toBe(true);
+    expect(isDemoUser({ id: 'demo-user', email: 'demo@auditally.app' })).toBe(true);
   });
 });
