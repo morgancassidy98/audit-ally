@@ -130,9 +130,9 @@ export default async function ChecklistPage({
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: '4px' }}>
                     <path d="M13 2L5 13H11L9 22L19 10H13L15 2Z" />
                   </svg>
-                  <span>{page.lighthouseScore ?? 0}/100</span>
+                  <span>Lighthouse {page.lighthouseScore ?? 0}/100</span>
                 </div>
-                <span className="checklist-scan-text">Flagged criteria are sorted to the top.</span>
+                <span className="checklist-scan-text">Automated scan score. Flagged criteria are sorted to the top.</span>
               </div>
             </div>
           )}
@@ -143,8 +143,18 @@ export default async function ChecklistPage({
             label={page.scannedAt === null ? 'Auto-scan' : 'Rescan'}
           />
           <div className="checklist-progress">
+            <div className="checklist-progress-label">Overall WCAG review progress</div>
             <div className="checklist-progress-main">
-              <div className="progress-bar" style={{ width: '160px' }}>
+              <div
+                className="progress-bar"
+                style={{ width: '160px' }}
+                role="progressbar"
+                aria-label="Overall WCAG review progress"
+                aria-valuemin={0}
+                aria-valuemax={wcagCriteria.length}
+                aria-valuenow={tested}
+                aria-valuetext={`${tested} of ${wcagCriteria.length} criteria reviewed`}
+              >
                 <div
                   className="progress-bar-fill"
                   style={{ width: `${progress}%` }}
