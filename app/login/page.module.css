@@ -17,6 +17,14 @@
   margin-bottom: 32px;
 }
 
+.logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: block;
+}
+
 .title {
   font-family: var(--font-display);
   font-size: 32px;

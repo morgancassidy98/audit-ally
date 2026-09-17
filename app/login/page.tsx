@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { signIn } from '@/lib/auth';
 import { GitHubIcon, GoogleIcon } from '@/components/icons';
 import { CredentialsForm } from '@/components/CredentialsForm';
+import auditAllyLogo from '../../docs/logos/auditally_logo_dark_round.png';
 import styles from './page.module.css';
 
 function Divider({ children }: { children: React.ReactNode }) {
@@ -12,6 +14,14 @@ export default function LoginPage() {
     <div className={styles.shell}>
       <div className={`card ${styles.card}`}>
         <div className={styles.header}>
+          <Image
+            src={auditAllyLogo}
+            alt="Audit Ally logo"
+            className={styles.logo}
+            width={64}
+            height={64}
+            priority
+          />
           <h1 className={styles.title}>Audit Ally</h1>
           <p className={`text-muted ${styles.subtitle}`}>
             Sign in to manage your accessibility audits
@@ -29,8 +39,9 @@ export default function LoginPage() {
               </button>
             </form>
             <p className={`text-muted ${styles.hint}`}>
-              Reviewing this app? Try it out with a private, temporary demo account — no sign-up
-              needed. Your demo audits are only visible to you and are cleared automatically.
+              Reviewing this app? Jump into a private, temporary demo account with a pre-filled
+              sample audit — no sign-up needed. Your demo data is only visible to you and is
+              cleared automatically.
             </p>
           </div>
 
