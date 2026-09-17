@@ -122,17 +122,21 @@ export function ReportSummary({
                   alignItems: 'center',
                   flexShrink: 0,
                 }}>
-                  {page.lighthouseScore !== null && (
-                    <div className="report-page-stat" style={{ textAlign: 'center' }}>
+                  <div
+                    className="report-page-stat"
+                    style={{ textAlign: 'center' }}
+                    title={page.lighthouseScore === null ? 'Lighthouse scan not run yet' : 'Lighthouse score'}
+                  >
                       <div style={{
                         fontSize: '20px',
                         fontWeight: 600,
-                        color: page.lighthouseScore >= 90 ? '#2d5a1e'
-                          : page.lighthouseScore >= 70 ? '#4a3a10'
-                          : '#6e0d2a',
+                        color: page.lighthouseScore === null ? '#777'
+                          : page.lighthouseScore >= 90 ? '#2d5a1e'
+                            : page.lighthouseScore >= 70 ? '#4a3a10'
+                            : '#6e0d2a',
                         lineHeight: 1,
                       }}>
-                        {page.lighthouseScore}
+                        {page.lighthouseScore ?? '—'}
                       </div>
                       <div style={{
                         fontSize: '11px',
@@ -142,8 +146,7 @@ export function ReportSummary({
                       }}>
                         LH
                       </div>
-                    </div>
-                  )}
+                  </div>
 
                   <div className="report-page-stat" style={{ textAlign: 'center' }}>
                     <div style={{
@@ -173,7 +176,7 @@ export function ReportSummary({
                         : '#6e0d2a',
                       lineHeight: 1,
                     }}>
-                      {page.stats.passRate > 0 ? `${page.stats.passRate}%` : '—'}
+                      {page.stats.tested === 0 ? '—' : `${page.stats.passRate}%`}
                     </div>
                     <div style={{
                       fontSize: '11px',

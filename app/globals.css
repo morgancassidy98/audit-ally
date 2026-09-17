@@ -701,7 +701,7 @@ select.form-input {
 
 .report-page-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) 460px;
   align-items: center;
 }
 
@@ -715,10 +715,10 @@ select.form-input {
   grid-column: 2;
   grid-row: 1;
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(52px, 1fr)) minmax(100px, 1fr) 96px;
-  gap: 16px !important;
+  grid-template-columns: 48px 48px 76px minmax(100px, 1fr) 100px;
+  gap: 12px !important;
   align-items: center;
-  width: min(100%, 428px);
+  width: 100%;
   padding: 20px 28px 20px 0;
 }
 
@@ -731,7 +731,7 @@ select.form-input {
 }
 
 .report-page-action {
-  width: 96px;
+  width: 100px;
 }
 
 .report-page-details {
