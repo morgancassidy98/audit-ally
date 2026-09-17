@@ -69,7 +69,7 @@ export function ReportSummary({
       ) : (
         <div>
           {pages.map((page) => (
-            <div key={page.id} style={{
+            <div key={page.id} className="report-page-row" style={{
               borderBottom: '1px solid var(--color-border)',
             }}>
               {/* Page header row */}
@@ -114,6 +114,7 @@ export function ReportSummary({
                     {page.url}
                   </div>
                 </div>
+              </button>
 
                 <div className="report-page-metrics" style={{
                   display: 'flex',
@@ -122,7 +123,7 @@ export function ReportSummary({
                   flexShrink: 0,
                 }}>
                   {page.lighthouseScore !== null && (
-                    <div style={{ textAlign: 'center' }}>
+                    <div className="report-page-stat" style={{ textAlign: 'center' }}>
                       <div style={{
                         fontSize: '20px',
                         fontWeight: 600,
@@ -144,7 +145,7 @@ export function ReportSummary({
                     </div>
                   )}
 
-                  <div style={{ textAlign: 'center' }}>
+                  <div className="report-page-stat" style={{ textAlign: 'center' }}>
                     <div style={{
                       fontSize: '20px',
                       fontWeight: 600,
@@ -163,7 +164,7 @@ export function ReportSummary({
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'center' }}>
+                  <div className="report-page-stat" style={{ textAlign: 'center' }}>
                     <div style={{
                       fontSize: '20px',
                       fontWeight: 600,
@@ -184,7 +185,7 @@ export function ReportSummary({
                     </div>
                   </div>
 
-                  <div style={{ width: '100px' }}>
+                  <div className="report-page-progress" style={{ width: '100px' }}>
                     <div className="progress-bar">
                       <div
                         className={`progress-bar-fill ${
@@ -207,17 +208,16 @@ export function ReportSummary({
 
                   <Link
                     href={`/audit/${auditId}/page/${page.id}`}
-                    className="btn btn-outline btn-sm"
+                    className="btn btn-outline btn-sm report-page-action"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {page.stats.progress < 100 ? 'Continue' : 'Review'}
                   </Link>
                 </div>
-              </button>
 
               {/* Expanded failures */}
               {expandedPages[page.id] && (
-                <div style={{
+                <div className="report-page-details" style={{
                   background: 'var(--color-bg)',
                   borderTop: '1px solid var(--color-border)',
                 }}>

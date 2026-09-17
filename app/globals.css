@@ -699,8 +699,44 @@ select.form-input {
   min-width: 0;
 }
 
+.report-page-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.report-page-toggle {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 .report-page-metrics {
   min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(52px, 1fr)) minmax(100px, 1fr) 96px;
+  gap: 16px !important;
+  align-items: center;
+  width: min(100%, 428px);
+  padding: 20px 28px 20px 0;
+}
+
+.report-page-stat {
+  min-width: 0;
+}
+
+.report-page-progress {
+  min-width: 100px;
+}
+
+.report-page-action {
+  width: 96px;
+}
+
+.report-page-details {
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 .report-failure-page {
@@ -2168,15 +2204,41 @@ a:focus-visible {
     padding: 16px;
   }
 
-  .report-page-metrics {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 12px !important;
+  .report-page-row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
   }
 
-  .report-page-metrics > div:last-child {
-    width: min(100%, 180px) !important;
+  .report-page-toggle {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .report-page-details {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .report-page-metrics {
+    grid-column: 1;
+    grid-row: 3;
+    width: auto;
+    flex: 1 1 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px !important;
+    width: 100%;
+    padding: 12px 16px 16px;
+  }
+
+  .report-page-progress,
+  .report-page-action {
+    grid-column: 1 / -1;
+    width: 100% !important;
+  }
+
+  .report-page-action {
+    min-width: 0;
+    width: 100%;
   }
 
   .page-header h1 { font-size: 24px; }
