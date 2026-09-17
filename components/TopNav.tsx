@@ -25,10 +25,6 @@ export function TopNav() {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Don't render nav for unauthenticated users
-  // (middleware handles redirect, this prevents flash)
-  if (status === 'unauthenticated') return null;
-
   return (
     <header className="topnav" role="banner">
       <div className="topnav-inner">
